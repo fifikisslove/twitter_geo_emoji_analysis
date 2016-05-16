@@ -1,3 +1,11 @@
+"""
+This algorithm analyze frequencies of occurence in already collected tweets.
+
+GROUP 1, Social Media, TU Graz
+15/05/215
+"""
+
+
 import json
 
 

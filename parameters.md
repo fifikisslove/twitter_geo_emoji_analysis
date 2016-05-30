@@ -6,6 +6,7 @@ An idea is to collect only these.
 "coordinates": null,
 "created_at": "Mon Sep 24 03:35:21 +0000 2012",
 "text": "Aggressive Ponytail #freebandnames",
+"friends_count":32
 ```
 
 Very simple but includes coordinates, time of creation and the actual text. It might be an idea to only extract emojis directly, instead of saving all of the text.

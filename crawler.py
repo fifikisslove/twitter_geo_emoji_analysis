@@ -115,7 +115,7 @@ def initialize(cities, date1):
 if __name__ == '__main__':
 
     date1="2016-05-23"
-    date2="2016-05-23"
+    date2="2016-05-24"
 
     initialize((reading_cities()), date1)
     cities = reading_cities()

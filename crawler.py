@@ -37,17 +37,18 @@ def limit_handled(cursor):
             time.sleep(15 * 60)
 
 
-def collect_tweets(city, geocode, query="*"):
+def collect_tweets(city, geocode, date1, date2, query="*"):
     """
     geocode : current used geocode.
     query is a filter for tweet collecting. By default "*" means no filter used.
     :return: nothing.
     """
-    cursor = (tweepy.Cursor(api.search, q=query, geocode=geocode).items())
+    cursor = (tweepy.Cursor(api.search, q=query, geocode=geocode, since=date1, until=date2,).items())
     print('start')
-    with open(city + '.json', 'a') as f:
+    print(cursor.__sizeof__())
+    with open(city + date1 + '.json', 'a') as f:
         for tweet in cursor:
-            print(tweet.text)
+            print(tweet.created_at)
             f.write(json.dumps(tweet._json))
             f.write("\n")
     print("TWEETS COLLECTION FROM" + city + "FINISHED")
@@ -62,6 +63,16 @@ def reading_cities():
     cities = {}
     for city in open('data.txt','r'):
         cities[city.split(' ')[0]] = city.split(' ')[1]
+    return cities
+
+def reading_date():
+    """
+    read data from the .txt files containing each date we are interested in.
+    :return: list of dates
+    """
+    dates = []
+    for date in open('data.txt','r'):
+        dates.append(date)
     return cities
 
 
@@ -79,33 +90,39 @@ def load_balancer():
             print("{} TWEETS FROM {} ".format(n, file))
             if(n < min):
                 min = n
-                next_city = file.split('.')[0]
+                next_city = file.split('2')[0]
     return next_city
 
 
-def initialize(cities):
+def initialize(cities, date1):
     """
     if does not exist, create the json file from each city.
     :param cities: cities in which we are interested in.
     :return:
     """
+    print('lol')
     our_current_files = os.listdir()
     for name in cities:
-        file = name + "json"
+        print('loll')
+        file = name + date1 + ".json"
         if file in our_current_files:
-            print("{}.json already exists".format(name))
+            print("{}{}.json already exists".format(name,date1))
         else:
-            open(name + '.json', 'a')
-    print("INITIALISATION OK")
+            open(name + date1 + '.json', 'a')
+
 
 
 if __name__ == '__main__':
-    initialize((reading_cities()))
+
+    date1="2016-05-23"
+    date2="2016-05-23"
+
+    initialize((reading_cities()), date1)
     cities = reading_cities()
     while True:
         next_city = load_balancer()
         try:
-            collect_tweets(next_city, cities[next_city])
+            collect_tweets(next_city, cities[next_city], date1, date2)
         except tweepy.TweepError:
             print("Rate limit reached, waiting 15 minutes.")
             time.sleep(15 * 60)

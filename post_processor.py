@@ -29,6 +29,25 @@ def get_text(tweet_json):
 
     return result
 
+def get_dataset_size(city, nb_of_hours_per_time_slot):
+    with open(city +".json", 'r') as f:
+        result = {}
+        for line in f:
+            json_data=(json.loads(line))
+            date = json_data['created_at'].split()
+            hour = date[3].split(":")
+            time_slot = round(int(hour[0])/(nb_of_hours_per_time_slot))
+            try:
+                result[date[0] + " time slot nb" + str(time_slot)] +=1
+            except:
+                result[date[0] + " time slot nb" + str(time_slot)] = 0
+        for key in result.keys():
+            print(key + ": " + str(result[key]) + " tweets")
+
+
+#get_data("strasbourg")
+#6 hours means 4 time slot
+get_dataset_size("strasbourg_post", 6)
 
 # put in whatever city you need.
 city = "zurich"

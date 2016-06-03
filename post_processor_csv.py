@@ -22,14 +22,7 @@ def get_text(tweet_json, city):
     except ValueError:
         print "ValueError"
 
-    result = dict()
-    result['text'] = json_data['text']
-    result['created_at'] = json_data['created_at']
-    # result['coordinates'] = json_data['coordinates']
-    result['friends_count'] = json_data['user']['friends_count']
-
     result = [json_data['text'], json_data['created_at'], json_data['user']['friends_count'], city]
-
     return result
 
 

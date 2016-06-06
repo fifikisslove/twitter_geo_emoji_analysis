@@ -35,9 +35,8 @@ def get_text(line, city):
     for emoji in emojies_list:
         if emoji in tweet['text']:
             new_tweet += emoji
-    print("after")
-    print(new_tweet)
-    return [new_tweet, tweet['created_at'], tweet['user']['friends_count'], city]
+    date = tweet['created_at'].split(" ")
+    return [new_tweet, date[0],date[3], tweet['user']['friends_count'], city]
 
 city = "toulouse"
 print("Starting post-processing into .csv for " + city)

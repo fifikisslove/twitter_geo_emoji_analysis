@@ -23,19 +23,20 @@ def put_together(emoji, emoji_unicode, category_data):
     # emoji_unicode in format           U1F600
     # category_data[unicode] in format  1f600
     emoji_unicode = emoji_unicode[1:]
+    if len(emoji_unicode) > 6:
+        emoji_unicode = emoji_unicode[:5] + emoji_unicode[-5:]
+        print emoji_unicode,
     # print emoji, emoji_unicode
 
     with open('processed_emoji.json', 'w') as processed_json:
 
         for key in category_data:  # key is name, value is dict with information
             category_unicode = category_data[key]["unicode"]
-            if category_unicode == emoji_unicode:
-
-                #print(emoji, emoji_unicode, category_unicode, category_data[key]["category"])
-
+            if len(category_unicode) > 6:
+                category_unicode = category_unicode[:5] + category_unicode[-5:]
+                print category_unicode
+            if category_unicode.upper() == emoji_unicode:
                 result = {emoji: category_data[key]["category"]}
-                #print(result)
-                #json.dump(result, processed_json)
                 return category_data[key]["category"]
 
         processed_json.write(json.dumps({emoji: ""}) + "\n")

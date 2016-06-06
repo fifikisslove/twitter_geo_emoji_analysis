@@ -1,7 +1,5 @@
-
 import json
 import csv
-import re
 
 
 def get_data(city):
@@ -18,8 +16,6 @@ def get_data(city):
                     continue
 
 
-
-
 def get_text(line, city):
     with open("emoji.json", 'r') as f:
         emojies = json.load(f)
@@ -29,16 +25,23 @@ def get_text(line, city):
         print("ValueError")
 
     emojies_list = list(emojies.keys())
-    print("before")
-    print(tweet['text'])
+    # print("before")
+    # print(tweet['text'])
     new_tweet = ""
+    number_of_emojis = 0  # number of emojis for this tweet
+    categories = list()  # all categories of emojis for this tweet
+
     for emoji in emojies_list:
         if emoji in tweet['text']:
+            # print "emoji"
             new_tweet += emoji
+            number_of_emojis += 1
+            if emojies[emoji] is not None:
+                categories.append(emojies[emoji])
     date = tweet['created_at'].split(" ")
-    return [new_tweet, date[0],date[3], tweet['user']['friends_count'], city]
+    return [new_tweet, number_of_emojis, " ".join(categories), date[0], date[3], tweet['user']['friends_count'], city]
 
-city = "toulouse"
+city = "zurich"
 print("Starting post-processing into .csv for " + city)
 get_data(city)
-print("Finished. Data saved in emoji_data.csv")
+print("Finished. Data saved in " + city + ".csv")

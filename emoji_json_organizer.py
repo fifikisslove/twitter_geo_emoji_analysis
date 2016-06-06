@@ -1,9 +1,8 @@
-
-
 import json
 
 
 def get_data():
+    result = {}
     print("Starting")
     with open('emoji.json', 'r') as unicode_json:
         with open('emoji_cat.json', 'r') as category_json:
@@ -11,9 +10,12 @@ def get_data():
             unicode_data = json.load(unicode_json)
             for emoji in unicode_data:
                 try:
-                    put_together(emoji, unicode_data[emoji], category_data)
+                    cat = put_together(emoji, unicode_data[emoji], category_data)
+                    result[emoji] = cat
                 except ValueError:
                     continue
+    with open('processed_emoji.json', 'w') as processed_json:
+        processed_json.write(json.dumps(result))
 
 
 def put_together(emoji, emoji_unicode, category_data):
@@ -25,15 +27,16 @@ def put_together(emoji, emoji_unicode, category_data):
 
     with open('processed_emoji.json', 'w') as processed_json:
 
-        for key, value in category_data.iteritems():  # key is name, value is dict with information
-            category_unicode = value["unicode"].upper()
+        for key in category_data:  # key is name, value is dict with information
+            category_unicode = category_data[key]["unicode"]
             if category_unicode == emoji_unicode:
 
-                print emoji, emoji_unicode, category_unicode, value["category"]
+                #print(emoji, emoji_unicode, category_unicode, category_data[key]["category"])
 
-                result = {emoji: value["category"]}
-                processed_json.write(json.dumps(result) + "\n")
-                return
+                result = {emoji: category_data[key]["category"]}
+                #print(result)
+                #json.dump(result, processed_json)
+                return category_data[key]["category"]
 
         processed_json.write(json.dumps({emoji: ""}) + "\n")
 

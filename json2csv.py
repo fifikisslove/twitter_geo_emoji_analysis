@@ -29,18 +29,19 @@ def get_text(line, city):
     # print(tweet['text'])
     new_tweet = ""
     number_of_emojis = 0  # number of emojis for this tweet
-    categories = list()  # all categories of emojis for this tweet
+    categories = {'people': 0, 'nature': 0, 'activity': 0, 'food': 0, 'travel': 0, 'symbols': 0, 'objects': 0, 'flags': 0}  # people, nature, activity, food, travel, symbols, objects,
 
     for emoji in emojies_list:
         if emoji in tweet['text']:
             # print "emoji"
             new_tweet += emoji
             number_of_emojis += 1
-            if emojies[emoji] is not None:
-                print(emojies[emoji])
-                categories.append(emojies[emoji])
+            if emojies[emoji] in categories:
+                categories[emojies[emoji]] += 1
     date = tweet['created_at'].split(" ")
-    return [new_tweet, number_of_emojis, " ".join(categories), date[0], date[3], tweet['user']['friends_count'], city]
+    return [new_tweet, number_of_emojis, categories['people'], categories['nature'], categories['activity'],
+            categories['food'], categories['symbols'], categories['objects'], categories['flags'],
+            date[0], date[3], tweet['user']['friends_count'], city]
 
 city = "toulouse"
 print("Starting post-processing into .csv for " + city)

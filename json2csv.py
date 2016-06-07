@@ -17,7 +17,7 @@ def get_data(city):
 
 
 def get_text(line, city):
-    with open("emoji.json", 'r') as f:
+    with open("processed_emoji.json", 'r') as f:
         emojies = json.load(f)
     try:
         tweet = json.loads(line)
@@ -37,11 +37,12 @@ def get_text(line, city):
             new_tweet += emoji
             number_of_emojis += 1
             if emojies[emoji] is not None:
+                print(emojies[emoji])
                 categories.append(emojies[emoji])
     date = tweet['created_at'].split(" ")
     return [new_tweet, number_of_emojis, " ".join(categories), date[0], date[3], tweet['user']['friends_count'], city]
 
-city = "zurich"
+city = "toulouse"
 print("Starting post-processing into .csv for " + city)
 get_data(city)
 print("Finished. Data saved in " + city + ".csv")

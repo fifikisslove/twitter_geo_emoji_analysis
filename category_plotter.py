@@ -1,5 +1,7 @@
 import csv
 from matplotlib.pylab import plt
+from prettytable import PrettyTable
+import numpy as np
 
 
 def calculate_percentage(city):
@@ -12,7 +14,6 @@ def calculate_percentage(city):
     """
 
     categories_count = [0]*8
-    # categories_names = ['people', 'nature', 'activity', 'food', 'symbols', 'objects', 'flags', 'uncategorized']
     total = 0
 
     with open(city + "2.csv", 'r') as csv_file:
@@ -40,32 +41,67 @@ def calculate_percentage(city):
         data[city] = normalized_category_count
 
 
-def plot(ranks):
+def rearrange_data():
+
+    # new_data = {'people': [], 'nature': [], 'activity': [], 'food': [], 'symbols': [], 'objects': [],
+    #            'flags': [], 'uncategorized': []}
+    new_data = [[0 for x in range(26)] for y in range(8)]
+
+    # for city, array in data:
+    for city in data.keys():
+        i = cities.index(city)
+        for j in range(8):
+            new_data[j][i] = data[cities[i]][j]
+
+    print 'SUM', sum(row[0] for row in new_data)
+
+    p = PrettyTable()
+    for row in new_data:
+        p.add_row(row)
+    print p.get_string()
+    return new_data
+
+
+def plot():
     plt.figure(figsize=(20, 10))
+    width = 0.5
+    index = np.arange(26)
 
-    for row in range(0, 20):
-        s = row / 20.0
-        plt.plot(ranks[row], label='s = ' + str(s))
+    p0 = plt.bar(index, data[0], width, color='y')  # people
+    p1 = plt.bar(index, data[1], width, color='g')  # nature
+    p2 = plt.bar(index, data[2], width, color='r')  # activity
+    p3 = plt.bar(index, data[3], width, color='b')  # food
+    p4 = plt.bar(index, data[4], width, color='c')  # symbols
+    p5 = plt.bar(index, data[5], width, color='m')  # objects
+    p6 = plt.bar(index, data[6], width, color='k')  # flags
+    p7 = plt.bar(index, data[7], width, color='w')  # uncategorized
 
-    plt.title("Emoji category usage by city")
-    plt.ylabel("Category usage")
-    plt.xlabel("Cities")
-    # plt.legend(loc=9, ncol=5)
-    plt.savefig("emoji_categories_cities.png")
+    plt.ylabel('Usage')
+    plt.title('Emoji category usage per city')
+    plt.xticks(index + width/2.0, cities)
+    plt.yticks(np.arange(0, 1, 0.1))
+    plt.legend((p0[0], p1[0], p2[0], p3[0], p4[0], p5[0], p6[0], p7[0]), categories_names)
+
+    plt.show()
+    # plt.savefig("emoji_categories_cities.png")
 
 
 def calc_all():
 
-    cities = ["barcelona", "basel", "berlin", "birmingham", "geneva", "graz", "hamburg", "innsbruck", "krakow", "leeds",
-              "linz", "lodz", "london", "lyon", "madrid", "marseille", "milan", "munich", "naples", "paris", "rome",
-              "salzburg", "seville", "vienna", "warsaw", "zurich"]
     for city in cities:
         calculate_percentage(city)
-        print data
+        # print data
 
 
-data= {}
+cities = ["barcelona", "basel", "berlin", "birmingham", "geneva", "graz", "hamburg", "innsbruck", "krakow", "leeds",
+          "linz", "lodz", "london", "lyon", "madrid", "marseille", "milan", "munich", "naples", "paris", "rome",
+          "salzburg", "seville", "vienna", "warsaw", "zurich"]
+categories_names = ['people', 'nature', 'activity', 'food', 'symbols', 'objects', 'flags', 'uncategorized']
+
+data = {}
 print "Starting calculations."
 calc_all()
 print "Finished with calculations."
+data = rearrange_data()
+plot()
 
